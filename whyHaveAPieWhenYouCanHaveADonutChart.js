@@ -78,191 +78,214 @@
 
 */
 
-module.exports = function (app) {
+var app = angular.module('app', []);
 
-    'use strict';
+app.controller('ChartCtrl', ['$scope', function ($scope) {
+  
+  $scope.label = 'Ticket Priority';
+  
+  $scope.options = {};
+  
+  $scope.options.containerWidth = 200;
+  $scope.options.containerHeight = 200;
+  $scope.options.innerRadius = 50;
+  $scope.options.value = 327;
+  
+  $scope.options.data = [{
+    value: 132,
+    color: '#0071a9',
+    label: 'Low'
+  }, {
+    value: 145,
+    color: '#83CD41',
+    label: 'Normal'
+  }, {
+    value: 50,
+    color: '#E55349',
+    label: 'Critical'
+  }];
+  
+}]);
 
-    app.directive('donutChart', function () {
+app.directive('donutChart', function () {
 
-        return {
-            restrict: 'A',
-            scope: {
-                options: '=donutChart',
-                chartLabel: '=?',
-                clickArc: '=?'
-            },
-            link: function (scope, ele) {
+  return {
+    restrict: 'A',
+    scope: {
+      options: '=donutChart',
+      chartLabel: '=?',
+      clickArc: '=?'
+    },
+    link: function (scope, ele) {
 
-                var ease, title,containerWidth, containerHeight, innerRadius,outerRadius, view, tween,
-                    arc, arcs, arcHover,bgGroup, outerBackground, innerBackground, pie,path;
+      var ease, title,containerWidth, containerHeight, innerRadius,outerRadius, view, tween,
+          arc, arcs, arcHover,bgGroup, outerBackground, innerBackground, pie,path;
 
-                scope.options = scope.options|| {};
+      scope.options = scope.options|| {};
 
-                //Defines options
-                containerWidth = scope.options.containerWidth || 246;
-                containerHeight = scope.options.containerHeight || 246;
-                innerRadius = scope.options.innerRadius || 60;
-                outerRadius = scope.options.outerRadius || scope.options.containerWidth / 2 - 20;
-                tween = scope.options.tween || 450;
+      //Defines options
+      containerWidth = scope.options.containerWidth || 246;
+      containerHeight = scope.options.containerHeight || 246;
+      innerRadius = scope.options.innerRadius || 60;
+      outerRadius = scope.options.outerRadius || scope.options.containerWidth / 2 - 20;
+      tween = scope.options.tween || 450;
 
-                //find the view, append the child elements that we need
-                view = d3.select(ele[0])
-                    .attr('class', 'donut-chart')
-                    .append('svg') //add svg container
-                    .attr('width',containerWidth)
-                    .attr('height',scope.chartLabel ? containerHeight + 30 :containerHeight) //only make it 30px taller if we need space for a label
-                    .append('g')
-                    .attr('transform','translate(' + containerWidth / 2 + ',' + containerHeight / 2 + ')');
+      //find the view, append the child elements that we need
+      view = d3.select(ele[0])
+        .attr('class', 'donut-chart')
+        .append('svg') //add svg container
+        .attr('width',containerWidth)
+        .attr('height',scope.chartLabel ? containerHeight + 30 :containerHeight) //only make it 30px taller if we need space for a label
+        .append('g')
+        .attr('transform','translate(' + containerWidth / 2 + ',' + containerHeight / 2 + ')');
 
-                //"title" is the overall chart label
-                title = view.append('svg:g')
-                    .attr('transform','translate(0' + ',' + containerHeight / 2 +')');
+      //"title" is the overall chart label
+      title = view.append('svg:g')
+        .attr('transform','translate(0' + ',' + containerHeight / 2 +')');
 
-                title.append('svg:text')
-                    .attr('class', 'chart-label')
-                    .attr('dy', 5)
-                    .text(scope.chartLabel || '')
-                    .attr('text-anchor','middle');
+      title.append('svg:text')
+        .attr('class', 'chart-label')
+        .attr('dy', 5)
+        .text(scope.chartLabel || '')
+        .attr('text-anchor','middle');
 
-                //make the paths!
-                arc = d3.arc()
-                    .outerRadius(outerRadius)
-                    .innerRadius(innerRadius);
+      //make the paths!
+      arc = d3.arc()
+        .outerRadius(outerRadius)
+        .innerRadius(innerRadius);
 
-                bgGroup = view.append('svg:g')
-                    .attr('class', 'center-group')
-                    .attr('transform','translate(' + 0 + ',' + 0 + ')');
+      bgGroup = view.append('svg:g')
+        .attr('class', 'center-group')
+        .attr('transform','translate(' + 0 + ',' + 0 + ')');
 
-                outerBackground = bgGroup.append('svg:circle')
-                    .attr('fill','rgba(0,0,0,.1)')
-                    .attr('r', outerRadius);
+      outerBackground = bgGroup.append('svg:circle')
+        .attr('fill','rgba(0,0,0,.1)')
+        .attr('r', outerRadius);
 
-                innerBackground = bgGroup.append('svg:circle')
-                    .attr('fill', '#fff')
-                    .attr('r', innerRadius);
+      innerBackground = bgGroup.append('svg:circle')
+        .attr('fill', '#fff')
+        .attr('r', innerRadius);
 
-                //when hovering on arc
-                arcHover = d3.arc()
-                    .outerRadius(outerRadius + 5)
-                    .innerRadius(innerRadius + 5);
+      //when hovering on arc
+      arcHover = d3.arc()
+        .outerRadius(outerRadius + 5)
+        .innerRadius(innerRadius + 5);
 
-                pie = d3.pie()
-                    .value(function (d) {return d.value || 0; })
-                    .sort(null);
+      pie = d3.pie()
+        .value(function (d) {return d.value || 0; })
+        .sort(null);
 
-                //Builds the donut and displays it on the page
-                scope.render = function () {
+      //Builds the donut and displays it on the page
+      scope.render = function () {
 
-                    //select all g elements that have slice class
-                    arcs = view.datum(scope.options.data).selectAll('g.slice')
+        //select all g elements that have slice class
+        arcs = view.datum(scope.options.data).selectAll('g.slice')
 
-                        //associate pie data
-                        .data(pie)
+        //associate pie data
+          .data(pie)
 
-                        //create g elements for each piece of data
-                        .enter()
+        //create g elements for each piece of data
+          .enter()
 
-                        //create a group to associate slice so we can add labels to each slice
-                        .append('svg:g')
+        //create a group to associate slice so we can add labels to each slice
+          .append('svg:g')
 
-                        //slice stylin'
-                        .attr('class','slice');
+        //slice stylin'
+          .attr('class','slice');
 
-                    //draws the paths for slices
-                    path = arcs.append('path')
+        //draws the paths for slices
+        path = arcs.append('path')
 
-                        .attr('fill', function(d, idx) {
-                            returnscope.options.data[idx].color;
-                        })
+          .attr('fill', function(d, idx) {
+          return scope.options.data[idx].color;
+        })
 
-                        .attr('d', arc)
+          .attr('d', arc)
 
-                        .each(function (d) {this._current = d; });
+          .each(function (d) {this._current = d; });
 
-                    scope.drawLabels({ value:scope.options.value || '', label: 'Total' });
+        scope.drawLabels({ value:scope.options.value || '', label: 'Total' });
 
-                    scope.addListeners();
+        scope.addListeners();
 
-                    scope.rendered = true;
+        scope.rendered = true;
 
-                };
+      };
 
-                scope.drawLabels = function(dataOptions) {
+      scope.drawLabels = function(dataOptions) {
 
-                    var labelGroup;
+        var labelGroup;
 
-                    //remove label and redraw so labels don't stack on top of each other
-                    view.select('.label-group')
-                        .remove();
+        //remove label and redraw so labels don't stack on top of each other
+        view.select('.label-group')
+          .remove();
 
-                    labelGroup = view.append('svg:g')
-                        .attr('class', 'label-group')
-                        .attr('transform','translate(' + 0 + ',' + 0 + ')');
+        labelGroup = view.append('svg:g')
+          .attr('class', 'label-group')
+          .attr('transform','translate(' + 0 + ',' + 0 + ')');
 
-                    //Render label
-                    labelGroup.append('svg:text')
-                        .attr('class', 'label')
-                        .attr('dy', -2)
-                        .attr('text-anchor','middle')
-                        .text(dataOptions.label|| '');
+        //Render label
+        labelGroup.append('svg:text')
+          .attr('class', 'label')
+          .attr('dy', -2)
+          .attr('text-anchor','middle')
+          .text(dataOptions.label|| '');
 
-                    //Render Label Value
-                    labelGroup.append('svg:text')
-                        .attr('class', 'label-value')
-                        .attr('dy', 15)
-                        .attr('text-anchor','middle')
-                        .text((scope.options.preUnitLabel || '') + (dataOptions.value || 0) + (scope.options.postUnitLabel || ''));
+        //Render Label Value
+        labelGroup.append('svg:text')
+          .attr('class', 'label-value')
+          .attr('dy', 15)
+          .attr('text-anchor','middle')
+          .text((scope.options.preUnitLabel || '') + (dataOptions.value || 0) + (scope.options.postUnitLabel || ''));
 
-                };
+      };
 
-                //adds hover/click events
-                scope.addListeners = function() {
+      //adds hover/click events
+      scope.addListeners = function() {
 
-                    //when you hover on a slice, make it look like it zooms
-                    arcs.on('mouseover',function (d, idx) {
+        //when you hover on a slice, make it look like it zooms
+        arcs.on('mouseover',function (d, idx) {
 
-                        var target = d3.select(this);
+          var target = d3.select(this);
 
-                        arcHover = d3.arc().outerRadius(outerRadius + 5).innerRadius(innerRadius + 5);
+          arcHover = d3.arc().outerRadius(outerRadius + 5).innerRadius(innerRadius + 5);
 
-                        scope.drawLabels(scope.options.data[idx]);
+          scope.drawLabels(scope.options.data[idx]);
 
-                        target.select('path').transition()
-                            //.ease('elastic')
-                            //.duration(tween)
-                            .attr('d',arcHover)
-                            .attr('fill',function (d) {
-                                returnd3.rgb(scope.options.data[idx].color).brighter();
-                            });
+          target.select('path').transition()
+          //.ease('elastic')
+          //.duration(tween)
+            .attr('d',arcHover)
+            .attr('fill',function (d) {
+            returnd3.rgb(scope.options.data[idx].color).brighter();
+          });
 
-                    });
+        });
 
-                    //return to normal
-                    arcs.on('mouseout',function (d, idx) {
+        //return to normal
+        arcs.on('mouseout',function (d, idx) {
 
-                        var target = d3.select(this);
+          var target = d3.select(this);
 
-                        scope.drawLabels({ value: scope.options.value || '', label:'Total' });
+          scope.drawLabels({ value: scope.options.value || '', label:'Total' });
 
-                        target.select('path').transition()
-                            //.ease('back')
-                            //.duration(tween)
-                            .attr('d', arc)
-                            .attr('fill',function (d) { returnd3.rgb(scope.options.data[idx].color); });
+          target.select('path').transition()
+          //.ease('back')
+          //.duration(tween)
+            .attr('d', arc)
+            .attr('fill',function (d) { returnd3.rgb(scope.options.data[idx].color); });
 
-                    });
+        });
 
-                };
+      };
 
-                scope.$watch('options.data',function (curr, prev) {
-                    if (curr && !scope.rendered&& !angular.equals(curr !== prev)) {
-                        scope.render();
-                    }
-                });
+      scope.$watch('options.data',function (curr, prev) {
+        if (curr && !scope.rendered&& !angular.equals(curr !== prev)) {
+          scope.render();
+        }
+      });
 
-            }
-        };
+    }
+  };
 
-    });
-
-};
+});
