@@ -29,29 +29,33 @@
                 $scope.options.containerHeight = 200;
                 $scope.options.innerRadius = 50;
                 $scope.options.data = [{
-                     value: 32,
-                     color: '#0071a9',
-                     label: 'Deductible'
-                 }, {
-                     value: 45,
-                     color: '#00ff00',
-                     label: 'Copay'
+                    value: 132,
+                    color: '#0071a9',
+                    label: 'Low'
+                }, {
+                    value: 145,
+                    color: '#83CD41',
+                    label: 'Normal'
+                }, {
+                    value: 50,
+                    color: '#E55349',
+                    label: 'Critical'
                 }];
 
     VI.     LESS Example Usage:
-                .donut-chart {
-                    .chart-label {
-                         fill: @ChristianGrey;
-                         font-weight: bold;
-                    }
-                    .label-group {
-                       fill: @Greyskull;
-                         .label {
-                           font-weight: bold;
-                           fill: @ChristianGrey;
-                       }
-                    }
-                 }
+								.donut-chart {
+										font-family: Calibri, sans-serif;
+										 .chart-label {
+											 fill: grey;
+										 }
+										 .label-group {
+											 fill: darkgray;
+											 .label {
+												 font-weight: bold;
+												 fill: grey;
+											 }
+										 }
+									}
 
     VII.    Improvements
                 1. flag to change location of the chartLabel between top or bottom
