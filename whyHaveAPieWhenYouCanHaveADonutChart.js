@@ -43,19 +43,19 @@
                 }];
 
     VI.     LESS Example Usage:
-								.donut-chart {
-										font-family: Calibri, sans-serif;
-										 .chart-label {
-											 fill: grey;
-										 }
-										 .label-group {
-											 fill: darkgray;
-											 .label {
-												 font-weight: bold;
-												 fill: grey;
-											 }
-										 }
-									}
+		.donut-chart {
+			font-family: Calibri, sans-serif;
+			.chart-label {
+				fill: grey;
+			 }
+			 .label-group {
+				 fill: darkgray;
+				 .label {
+					 font-weight: bold;
+					 fill: grey;
+				 }
+			 }
+		}
 
     VII.    Improvements
                 1. flag to change location of the chartLabel between top or bottom
@@ -74,8 +74,14 @@
                 3. https://bost.ocks.org/mike/transition/
                 4. https://github.com/d3/d3-transition
                 5. https://github.com/d3/d3/blob/master/API.md
+		
+    IX.	    Attributions
+    		1. PHT Corp - at the very first company I worked at out of college, we had these awesome donut charts
+		   that I spent a lot of time looking at. It helped me learn SVG, and that was a lot of the motivation for the
+		   design of these. Although PHT is no longer a company, thanks for teaching me the basics of Angular and
+		   Javascript.
 
-    IX.     Other Developer Suggestions
+    X.     Other Developer Suggestions
                 1.
                 2.
                 3.
